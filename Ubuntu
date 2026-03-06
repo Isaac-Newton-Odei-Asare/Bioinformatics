@@ -1,0 +1,91 @@
+1. Terminal Basics
+Command	Purpose	Example
+ls	List files	ls
+ls -al	List all, including hidden	ls -al
+cd <folder>	Change directory	cd ~/Bioinformatics
+mkdir <folder>	Make new folder	mkdir SubFolder
+touch <file>	Create empty file	touch NewFile.txt
+echo "text" > file	Create file with content	echo "Hello World" > NewFile.txt
+cat <file>	Show file content	cat NewFile.txt
+
+2. Git Basics
+Command	Purpose	Example
+git status	Check file status	git status
+git add <file>	Stage a file	git add NewFile.txt
+git add .	Stage all changes	git add .
+git commit -m "message"	Commit staged changes	git commit -m "Add NewFile.txt"
+git push origin <branch>	Push to GitHub	git push origin main
+git log --oneline -5	Show last 5 commits	git log --oneline -5
+
+3. Branches
+Command	Purpose	Example
+git branch	List branches	git branch
+git checkout <branch>	Switch branch	git checkout dev
+git push origin <branch>	Push branch	git push origin dev
+4. SSH Key Setup
+
+Generate key:
+
+ssh-keygen -t ed25519 -C "isaacnewtonswesco@gmail.com"
+
+Show public key:
+
+cat ~/.ssh/id_ed25519.pub
+
+Add to GitHub → Settings → SSH and GPG keys → New SSH key
+
+Test connection:
+
+ssh -T git@github.com
+
+Expected: Hi Isaac-Newton-Odei-Asare! You've successfully authenticated...
+
+5. Uploading Files to GitHub
+Add a file
+echo "This is a new file" > NewFile.txt
+git add NewFile.txt
+git commit -m "Add NewFile.txt"
+git push origin main
+Add a file in a subfolder
+mkdir -p SubFolder
+echo "Content in subfolder" > SubFolder/File.txt
+git add SubFolder/File.txt
+git commit -m "Add File.txt to SubFolder"
+git push origin main
+
+Tip: Don’t commit .ssh or private keys. Use .gitignore for sensitive files.
+
+6. Working from a Different PC
+
+Install Git and set identity:
+
+git config --global user.name "Isaac-Newton-Odei-Asare"
+git config --global user.email "isaacnewtonswesco@gmail.com"
+
+Generate SSH key and add to GitHub (see above)
+
+Clone your repo:
+
+git clone git@github.com:Isaac-Newton-Odei-Asare/Bioinformatics.git
+cd Bioinformatics
+
+Pull latest changes before work:
+
+git pull origin main
+
+Stage, commit, and push changes:
+
+git add .
+git commit -m "Your commit message"
+git push origin main
+7. Key Notes
+
+Commit → Push workflow
+
+Always know your branch
+
+SSH key setup is one-time per machine
+
+File/folder structure on Ubuntu is preserved on GitHub
+
+Use git status often to track changes
