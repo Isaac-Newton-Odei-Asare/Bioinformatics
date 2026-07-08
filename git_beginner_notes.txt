@@ -1,0 +1,438 @@
+GitHub + SSH + Git Workflow on Ubuntu (Beginner Reference Guide)
+
+
+This guide covers the complete workflow:
+
+Create SSH key → Connect GitHub → Clone repository → Modify files → Commit changes → Push to GitHub
+
+Part 1 — Understanding Git, GitHub, and SSH
+Git vs GitHub
+Git
+
+Git is a version control system installed on your computer.
+
+It tracks:
+
+file changes
+deletions
+additions
+different versions of your project
+
+Example:
+
+git status
+
+shows what changed locally.
+
+GitHub
+
+GitHub is an online platform that stores Git repositories.
+
+Think:
+
+Your Ubuntu computer          GitHub website
+
+Local repository  ───────→    Remote repository
+Part 2 — SSH Authentication
+Why SSH?
+
+SSH allows your computer to securely communicate with GitHub.
+
+Without SSH:
+
+Username + password/token
+
+With SSH:
+
+SSH key authentication
+SSH Key Concept
+
+SSH uses a pair of keys:
+
+Private key 🔒              Public key 🔑
+
+Your computer               GitHub
+(stays secret)              (can be shared)
+
+The two keys are mathematically linked.
+
+Private Key
+
+Example:
+
+~/.ssh/id_ed25519_github
+
+Purpose:
+
+proves your identity
+stays only on your computer
+
+Rules:
+
+❌ Never share it
+❌ Never upload it
+❌ Never send it online
+
+Public Key
+
+Example:
+
+~/.ssh/id_ed25519_github.pub
+
+Purpose:
+
+uploaded to GitHub
+allows GitHub to recognize your computer
+
+Safe to share.
+
+Part 3 — Create SSH Key
+Step 1: Check SSH folder
+ls -la ~/.ssh
+
+SSH keys are stored here:
+
+/home/username/.ssh/
+Step 2: Generate SSH key
+
+Command:
+
+ssh-keygen -t ed25519 -C "your_email" -f ~/.ssh/id_ed25519_github
+
+Example:
+
+ssh-keygen -t ed25519 -C "isaacnewtonswesco@gmail.com" -f ~/.ssh/id_ed25519_github
+
+Explanation:
+
+Option	Meaning
+ssh-keygen	Create SSH keys
+-t	Key type
+ed25519	Modern encryption algorithm
+-C	Comment/email label
+-f	File name
+Why Ed25519?
+
+Common SSH algorithms:
+
+Algorithm	Status
+Ed25519	Recommended
+RSA	Older but supported
+ECDSA	Less common
+DSA	Deprecated
+
+Ed25519 is preferred because:
+
+secure
+fast
+small key size
+modern design
+Step 3: Passphrase
+
+You will see:
+
+Enter passphrase:
+
+Options:
+
+More secure:
+
+Enter a password.
+
+More convenient:
+
+Press:
+
+Enter
+Enter
+
+A passphrase protects your private key if someone steals the file.
+
+Step 4: Check created keys
+ls -la ~/.ssh
+
+You should see:
+
+id_ed25519_github
+id_ed25519_github.pub
+File Permissions
+
+Check:
+
+ls -l ~/.ssh/id_ed25519_github
+
+Correct:
+
+-rw-------
+
+Meaning:
+
+Owner:
+rw-  read + write
+
+Group:
+---  no access
+
+Others:
+---  no access
+
+Fix if needed:
+
+chmod 600 ~/.ssh/id_ed25519_github
+Part 4 — Connect SSH Key to GitHub
+Step 1: Copy public key
+
+Run:
+
+cat ~/.ssh/id_ed25519_github.pub
+
+Output:
+
+ssh-ed25519 AAAAC3..... email@gmail.com
+
+Copy the entire line.
+
+Step 2: Add key to GitHub
+
+Go to:
+
+GitHub
+ ↓
+Profile
+ ↓
+Settings
+ ↓
+SSH and GPG Keys
+ ↓
+New SSH Key
+
+Add:
+
+Title:
+
+Ubuntu Laptop
+
+Type:
+
+Authentication Key
+
+Paste public key.
+
+Part 5 — Configure SSH
+
+Because your key has a custom name:
+
+id_ed25519_github
+
+create:
+
+nano ~/.ssh/config
+
+Add:
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github
+
+Save:
+
+Ctrl + O
+Enter
+Ctrl + X
+Part 6 — Test SSH Connection
+
+Run:
+
+ssh -T git@github.com
+
+Successful message:
+
+Hi username! You've successfully authenticated,
+but GitHub does not provide shell access.
+
+Meaning:
+
+✅ SSH works
+✅ GitHub recognizes your computer
+
+Part 7 — Clone Repository
+HTTPS method
+
+Example:
+
+git clone https://github.com/user/repository.git
+
+May require login/token.
+
+SSH method (recommended)
+
+Example:
+
+git clone git@github.com:user/repository.git
+
+Your repository:
+
+git clone git@github.com:Isaac-Newton-Odei-Asare/Bioinformatics.git
+Part 8 — Configure Git Identity
+
+Git needs your name and email for commits.
+
+Set:
+
+git config --global user.name "Isaac-Newton-Odei-Asare"
+
+Set email:
+
+git config --global user.email "your_email@gmail.com"
+
+Check:
+
+git config --global --list
+
+Correct:
+
+user.name=Isaac-Newton-Odei-Asare
+user.email=your_email@gmail.com
+Important Note
+
+SSH email and Git email are different things.
+
+SSH:
+
+-C email
+
+is only a label.
+
+Git email:
+
+git config user.email
+
+appears in your commits.
+
+Part 9 — Working With Files
+Check changes
+git status
+
+Example:
+
+deleted: old_file.txt
+Stage changes
+
+For deleted/modified files:
+
+git add -u
+
+For everything:
+
+git add .
+Commit changes
+git commit -m "Remove unnecessary files"
+
+Meaning:
+
+Create a saved version of your changes.
+
+Push to GitHub
+git push
+
+Meaning:
+
+Upload your commits to GitHub.
+
+Complete Workflow
+Edit files
+    ↓
+git status
+    ↓
+git add .
+    ↓
+git commit -m "message"
+    ↓
+git push
+    ↓
+GitHub updated
+Part 10 — Fix HTTPS Remote Problem
+
+Check connection:
+
+git remote -v
+
+If you see:
+
+https://github.com/...
+
+you are using HTTPS.
+
+Change to SSH:
+
+git remote set-url origin git@github.com:user/repository.git
+
+Example:
+
+git remote set-url origin git@github.com:Isaac-Newton-Odei-Asare/Bioinformatics.git
+
+Check:
+
+git remote -v
+
+Should show:
+
+git@github.com:username/repository.git
+
+Now:
+
+git push
+Part 11 — Deleting Files From GitHub
+
+Deleting locally:
+
+rm filename
+
+does NOT delete from GitHub.
+
+You need:
+
+Delete file
+    ↓
+git add -u
+    ↓
+git commit
+    ↓
+git push
+
+Only after git push does GitHub update.
+
+Useful Commands Summary
+Purpose	Command
+Check files	git status
+View remote	git remote -v
+Add changes	git add .
+Add deletions	git add -u
+Commit	git commit -m "message"
+Upload	git push
+Download updates	git pull
+View history	git log --oneline
+SSH Folder Final Structure
+~/.ssh/
+
+├── id_ed25519_github
+│       ↓
+│   Private key 🔒
+│   NEVER SHARE
+
+├── id_ed25519_github.pub
+│       ↓
+│   Public key 🔑
+│   Upload to GitHub
+
+├── config
+│       ↓
+│   SSH instructions
+
+└── known_hosts
+        ↓
+    Trusted servers
+One-Line Memory Rule
+
+SSH connects you securely → Git tracks changes → Commit saves locally → Push updates GitHub.
